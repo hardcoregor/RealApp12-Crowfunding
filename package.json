@@ -10,13 +10,14 @@
   },
   "dependencies": {
     "autoprefixer": "10.4.15",
-    "ether": "^0.0.9",
+    "bufferutil": "^4.0.7",
     "ethers": "^6.7.1",
     "next": "13.4.19",
     "postcss": "8.4.29",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "tailwindcss": "3.3.3",
+    "utf-8-validate": "^6.0.3",
     "web3modal": "^1.9.12"
   },
   "devDependencies": {
