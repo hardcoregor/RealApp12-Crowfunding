@@ -143,6 +143,7 @@ export const CrowFundingProvider = ({ children }) => {
 
   //CONNECT WALLET FUNCTION
   const connectWallet = async () => {
+    // console.log('heree');
     try {
       if (!window.ethereum) return console.log("Install Metamask");
 
@@ -158,9 +159,10 @@ export const CrowFundingProvider = ({ children }) => {
 
   return (
     <CrowFundingContext.Provider
-      value={(titleData, currentAccount, createCampaign, getCampaigns, getUserCampaigns, donate, getDonations, connectWallet)}
+      value={{ titleData, currentAccount, createCampaign, getCampaigns, getUserCampaigns, donate, getDonations, connectWallet }}
     >
       {children}
     </CrowFundingContext.Provider>
   );
+
 };

@@ -1,9 +1,7 @@
-import React from 'react'
 
-const index = () => {
+export default function Page() {
   return (
-    <div className=''>index</div>
-  )
+    <div>hello</div>
+  );
 }
 
-export default index
