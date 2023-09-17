@@ -17,23 +17,20 @@ export const CrowFundingProvider = ({ children }) => {
 
   const createCampaign = async (campaign) => {
     const { title, description, amount, deadline } = campaign;
-    const web3Modal = new Web3Modal();
-    const connection = await web3Modal.connect();
-    const provider = new ethers.providers.Web3Provider(connection);
-    const signer = provider.getSigner();
+    const provider = await new ethers.BrowserProvider(window.ethereum);
+    const signer = await provider.getSigner();
     const contract = fetchContract(signer);
 
     console.log(currentAccount);
 
     try {
-      const transaction = await contract.createCampaign({
+      const transaction = await contract.createCampaign(
         currentAccount,
         title,
         description,
-        amount: ethers.parseUnits(amount, 18), //or ethers.parseUnits
-        deadline: new Date(deadline).getTime(),
-      });
-
+        ethers.parseUnits(amount, 18),
+        new Date(deadline).getTime(),
+      );      
       await transaction.wait();
     } catch (error) {
       console.log("contract call failed", error);
@@ -41,10 +38,7 @@ export const CrowFundingProvider = ({ children }) => {
   };
 
   const getCampaigns = async () => {
-    const provider = new ethers.BrowserProvider(window.ethereum);
-
-    // const signer = await provider.getSigner(); //TODO: IS IT NEED HERE?
-    // console.log("Account:", await signer.getAddress()); //TODO: IS IT NEED HERE?
+    const provider = await new ethers.BrowserProvider(window.ethereum);
     const contract = fetchContract(provider);
 
     const campaigns = await contract.getCampaigns();
@@ -54,7 +48,7 @@ export const CrowFundingProvider = ({ children }) => {
       title: campaign.title,
       description: campaign.description,
       target: ethers.formatEther(campaign.target.toString()),
-      deadline: campaign.deadline.toNumber(),
+      deadline: Number(campaign.deadline),
       amountCollected: ethers.formatEther(campaign.amountCollected.toString()),
       pId: i,
     }));
@@ -73,17 +67,18 @@ export const CrowFundingProvider = ({ children }) => {
     });
 
     const currentUser = accounts[0];
-    const filterCampaigns = allCampaigns.filter((campaign) => campaign.owner === "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266");
+    const filterCampaigns = allCampaigns.filter((campaign) => campaign.owner.toUpperCase() === currentUser.toUpperCase());
 
     const userData = filterCampaigns.map((campaign, i) => ({
       owner: campaign.owner,
       title: campaign.title,
       description: campaign.description,
       target: ethers.formatEther(campaign.target.toString()),
-      deadline: campaign.deadline.toNumber(),
+      deadline: campaign.deadline, //TODO: TO NUMBER?
       amountCollected: ethers.formatEther(campaign.amountCollected.toString()),
       pId: i,
     }));
+
     return userData;
   };
 
@@ -111,7 +106,7 @@ export const CrowFundingProvider = ({ children }) => {
     for (let i = 0; i < numberOfDonations; i++) {
       parsedDonations.push({
         donator: donation[0][i],
-        donations: ethers.formatEther(donations[1][i].toString()),
+        donations: ethers.formatEther(donation[1][i].toString()),
       });
     }
 
@@ -143,7 +138,6 @@ export const CrowFundingProvider = ({ children }) => {
 
   //CONNECT WALLET FUNCTION
   const connectWallet = async () => {
-    // console.log('heree');
     try {
       if (!window.ethereum) return console.log("Install Metamask");
 

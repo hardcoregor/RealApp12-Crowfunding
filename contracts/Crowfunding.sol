@@ -5,7 +5,7 @@ contract Crowfunding {
   struct Campaign {
     address owner;
     string title;
-    string deiscription;
+    string description;
     uint256 target;
     uint256 deadline;
     uint amountCollected;
@@ -24,7 +24,7 @@ contract Crowfunding {
 
     campaign.owner = _owner;
     campaign.title = _title;
-    campaign.deiscription = _description;
+    campaign.description = _description;
     campaign.target = _target;
     campaign.deadline = _deadline;
 
